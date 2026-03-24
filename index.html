@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nanobot 任務管理</title>
+    <title>Nanobot 個人助理 - 功能導覽</title>
     <style>
         * {
             margin: 0;
@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
             border-radius: 16px;
@@ -30,29 +30,131 @@
         header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 30px;
+            padding: 40px 30px;
             text-align: center;
         }
 
         header h1 {
-            font-size: 2rem;
+            font-size: 2.5rem;
             margin-bottom: 10px;
         }
 
         header p {
             opacity: 0.9;
-            font-size: 0.95rem;
+            font-size: 1.1rem;
         }
 
-        .input-section {
+        .nav-section {
+            padding: 30px;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .nav-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+
+        .nav-card.active {
+            border-color: #667eea;
+            background: #eef2ff;
+        }
+
+        .nav-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .nav-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #212529;
+            margin-bottom: 10px;
+        }
+
+        .nav-desc {
+            color: #6c757d;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .nav-status {
+            margin-top: 12px;
+            padding: 4px 12px;
+            background: #28a745;
+            color: white;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
+        .nav-status.coming-soon {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .content-section {
             padding: 30px;
             background: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
+            border-top: 1px solid #e9ecef;
+            display: none;
         }
 
+        .content-section.active {
+            display: block;
+        }
+
+        .content-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .content-section p {
+            color: #495057;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #5a6fd8;
+        }
+
+        /* Task Manager Styles */
         .input-group {
             display: flex;
             gap: 10px;
+            margin-bottom: 20px;
         }
 
         .input-group input {
@@ -86,11 +188,12 @@
         }
 
         .stats {
-            padding: 20px 30px;
-            background: white;
             display: flex;
             justify-content: space-around;
-            border-bottom: 1px solid #e9ecef;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
 
         .stat-item {
@@ -110,14 +213,16 @@
         }
 
         .task-list {
-            padding: 0 30px 30px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
         }
 
         .task-item {
             display: flex;
             align-items: center;
-            padding: 16px;
-            margin-top: 15px;
+            padding: 12px;
+            margin-top: 10px;
             background: #f8f9fa;
             border-radius: 8px;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -174,15 +279,8 @@
 
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
+            padding: 40px 20px;
             color: #6c757d;
-        }
-
-        .empty-state svg {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 20px;
-            opacity: 0.5;
         }
 
         footer {
@@ -193,53 +291,165 @@
             font-size: 0.85rem;
             border-top: 1px solid #e9ecef;
         }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            color: #495057;
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-list li::before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🐈 Nanobot 任務管理</h1>
-            <p>個人助理任務追蹤系統</p>
+            <h1>🐈 Nanobot 個人助理</h1>
+            <p>你的智慧助手，一站式功能導覽</p>
         </header>
 
-        <div class="input-section">
-            <div class="input-group">
-                <input type="text" id="taskInput" placeholder="輸入新任務..." onkeypress="handleKeyPress(event)">
-                <button onclick="addTask()">新增任務</button>
-            </div>
-        </div>
+        <section class="nav-section" id="navSection">
+            <h2 style="color: white; margin-bottom: 10px;">📋 可用功能</h2>
+            <div class="nav-grid">
+                <div class="nav-card" onclick="showSection('task-manager')">
+                    <div class="nav-icon">✅</div>
+                    <div class="nav-title">任務管理</div>
+                    <div class="nav-desc">個人任務追蹤與管理，支援新增、完成、刪除任務</div>
+                    <div class="nav-status">已上線</div>
+                </div>
 
-        <div class="stats">
-            <div class="stat-item">
-                <div class="stat-number" id="totalTasks">0</div>
-                <div class="stat-label">總任務數</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="completedTasks">0</div>
-                <div class="stat-label">已完成</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="pendingTasks">0</div>
-                <div class="stat-label">進行中</div>
-            </div>
-        </div>
+                <div class="nav-card" onclick="showSection('coming-soon')">
+                    <div class="nav-icon">📊</div>
+                    <div class="nav-title">數據分析</div>
+                    <div class="nav-desc">任務統計與趨勢分析，幫助你了解工作模式</div>
+                    <div class="nav-status coming-soon">即將推出</div>
+                </div>
 
-        <div class="task-list" id="taskList">
-            <div class="empty-state">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                <p>還沒有任何任務，開始添加第一個吧！</p>
+                <div class="nav-card" onclick="showSection('coming-soon')">
+                    <div class="nav-icon">🔔</div>
+                    <div class="nav-title">提醒系統</div>
+                    <div class="nav-desc">智能提醒功能，不再錯過重要任務</div>
+                    <div class="nav-status coming-soon">即將推出</div>
+                </div>
+
+                <div class="nav-card" onclick="showSection('coming-soon')">
+                    <div class="nav-icon">🤝</div>
+                    <div class="nav-title">團隊協作</div>
+                    <div class="nav-desc">與他人共享任務，共同完成目標</div>
+                    <div class="nav-status coming-soon">即將推出</div>
+                </div>
+
+                <div class="nav-card" onclick="showSection('coming-soon')">
+                    <div class="nav-icon">⚙️</div>
+                    <div class="nav-title">設定中心</div>
+                    <div class="nav-desc">個人化設定，調整介面與功能偏好</div>
+                    <div class="nav-status coming-soon">即將推出</div>
+                </div>
+
+                <div class="nav-card" onclick="showSection('coming-soon')">
+                    <div class="nav-icon">📈</div>
+                    <div class="nav-title">績效報告</div>
+                    <div class="nav-desc">自動生成任務完成報告，追蹤生產力</div>
+                    <div class="nav-status coming-soon">即將推出</div>
+                </div>
             </div>
-        </div>
+        </section>
+
+        <!-- Task Manager Section -->
+        <section class="content-section" id="task-manager">
+            <button class="back-btn" onclick="showSection('nav')">← 返回導覽頁</button>
+            <h2>✅ 任務管理</h2>
+            <p>簡單直覺的任務追蹤系統，幫助你有效管理日常任務。</p>
+            
+            <ul class="feature-list">
+                <li>快速新增任務（按 Enter 或點擊按鈕）</li>
+                <li>標記任務完成狀態</li>
+                <li>刪除不再需要的任務</li>
+                <li>即時統計任務數量</li>
+                <li>資料本地持久化（localStorage）</li>
+                <li>響應式設計，支援各種裝置</li>
+            </ul>
+
+            <div style="margin-top: 30px; padding: 25px; background: white; border-radius: 12px;">
+                <h3 style="margin-bottom: 20px; color: #495057;">📝 試用任務管理</h3>
+                
+                <div class="input-group">
+                    <input type="text" id="taskInput" placeholder="輸入新任務..." onkeypress="handleKeyPress(event)">
+                    <button onclick="addTask()">新增任務</button>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalTasks">0</div>
+                        <div class="stat-label">總任務數</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="completedTasks">0</div>
+                        <div class="stat-label">已完成</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="pendingTasks">0</div>
+                        <div class="stat-label">進行中</div>
+                    </div>
+                </div>
+
+                <div class="task-list" id="taskList">
+                    <div class="empty-state">
+                        <p>還沒有任何任務，開始添加第一個吧！</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Coming Soon Section -->
+        <section class="content-section" id="coming-soon">
+            <button class="back-btn" onclick="showSection('nav')">← 返回導覽頁</button>
+            <h2>🚧 敬請期待</h2>
+            <p>這個功能正在開發中，很快就會與你見面！</p>
+            <p style="margin-top: 20px; color: #6c757d;">如果你有特別想要的功能，可以告訴我，我會優先考慮。</p>
+        </section>
 
         <footer>
-            <p>© 2025 Nanobot Task Manager | 部署於 GitHub Pages</p>
+            <p>© 2025 Nanobot 個人助理 | 部署於 GitHub Pages</p>
         </footer>
     </div>
 
     <script>
-        // 初始化任務列表
+        // 頁面切換
+        function showSection(sectionId) {
+            // 隱藏所有內容區域
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // 隱藏導覽區域（如果顯示）
+            document.getElementById('navSection').style.display = 'none';
+
+            // 顯示選擇的區域
+            if (sectionId === 'nav') {
+                document.getElementById('navSection').style.display = 'block';
+            } else {
+                document.getElementById(sectionId).classList.add('active');
+            }
+
+            // 更新卡片狀態
+            document.querySelectorAll('.nav-card').forEach(card => {
+                card.classList.remove('active');
+            });
+        }
+
+        // Task Manager Functions
         let tasks = JSON.parse(localStorage.getItem('nanobot-tasks')) || [];
 
         function saveTasks() {
@@ -263,9 +473,6 @@
             if (tasks.length === 0) {
                 taskList.innerHTML = `
                     <div class="empty-state">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
                         <p>還沒有任何任務，開始添加第一個吧！</p>
                     </div>
                 `;
@@ -330,9 +537,13 @@
             const completed = tasks.filter(t => t.completed).length;
             const pending = total - completed;
 
-            document.getElementById('totalTasks').textContent = total;
-            document.getElementById('completedTasks').textContent = completed;
-            document.getElementById('pendingTasks').textContent = pending;
+            const totalEl = document.getElementById('totalTasks');
+            const completedEl = document.getElementById('completedTasks');
+            const pendingEl = document.getElementById('pendingTasks');
+
+            if (totalEl) totalEl.textContent = total;
+            if (completedEl) completedEl.textContent = completed;
+            if (pendingEl) pendingEl.textContent = pending;
         }
 
         // 初始化
